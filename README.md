@@ -1,13 +1,14 @@
-# 딥러닝 튜닝 플레이북
+# 딥러닝 튜닝 플레이북(playbook)
 
 *이 저장소는 공식적인 구글 제품이 아닙니다.*
 
 **Varun Godbole<sup>&dagger;</sup>, George E. Dahl<sup>&dagger;</sup>, Justin Gilmer<sup>&dagger;</sup>, Christopher J. Shallue<sup>&Dagger;</sup>, Zachary Nado<sup>&dagger;</sup>**
 
-
 &dagger; 구글 리서치(Research), 브레인(Brain) 팀
 
 &Dagger; 하버드 대학
+
+번역: [박해선](https://github.com/rickiepark)
 
 ## 목차
 
@@ -52,345 +53,129 @@
 
 ## 왜 튜닝 플레이북인가요?
 
-실전에서 잘 동작하는 심층 신경망을 만들려면 엄청난 노력과 추측이 필요합니다. 게다가 좋은 결과를 얻으려고 딥러닝에 적용하는 실전 레서피는 거의 문서와 되어 있지 않습니다. 논문은 말끔한 내용으로 채우기 위해 최종 결과를 얻기 위한 과정을 상세히 다루지 않습니다. 상업적인 제품을 다루는 머신러닝 엔지니어에게는 잠시 숨을 돌리고 처리 과정을 일반화할 시간이 없습니다. 교과서는 실용적인 가이드를 피하고 기본 원리를 우선시하는 경향이 있습니다. 심지어 저자들이 유용한 가이드를 제공하는 데 필요한 응용 작업에 경험을 가지고 있는 경우에도 그렇습니다.
+실전에서 잘 동작하는 심층 신경망을 만들려면 엄청난 노력과 추측이 필요합니다. 게다가 좋은 결과를 얻으려고 딥러닝에 적용하는 실전 레서피는 거의 문서와 되어 있지 않습니다. 논문은 말끔한 내용으로 채우기 위해 최종 결과를 얻기 위한 과정을 상세히 다루지 않습니다. 상업적인 제품을 다루는 머신러닝 엔지니어에게는 잠시 숨을 돌리고 처리 과정을 일반화할 시간이 없습니다. 교과서는 실용적인 가이드를 피하고 기본 원리를 우선시하는 경향이 있습니다. 심지어 책 저자들이 유용한 가이드를 제공하는 데 필요한 응용 작업에 경험을 가지고 있는 경우에도 그렇습니다. 이 문서를 만들려고 준비할 때 실제로 *딥러닝으로 좋을 결과를 얻기 위한 방법*을 설명하는 어떤 비슷한 시도도 찾을 수 없었습니다. 대신에 블로그와 소셜 미디어에 흩어져 있는 단편적인 조언과 연구 논문의 부록에 실린 트릭, 이따금 특정 프로젝트나 파이프라인에 관한 사례 연구 그리고 혼란스러운 내용을 많이 보았습니다. 겉으로 보면 비슷한 방법을 사용하는 딥러닝 전문가와 덜 숙련된 기술자의 결과에는 큰 차이가 있습니다. 동시에 이런 전문가들은 자신들의 방식이 충분히 입증되지 않았다는 것을 쉽게 인정합니다. 딥러닝이 성숙해 지고 세상에 큰 영향을 미치면서 커뮤니티는 유용한 레서피를 다룬 자료가 많이 필요합니다. 이런 레서피에는 좋은 결과를 얻기 위해 매우 중요할 수 있는 실용적인 상세 사항이 모두 포함되어 있을 것입니다.
 
-Currently, there is an astonishing amount of toil and guesswork involved in
-actually getting deep neural networks to work well in practice. Even worse, the
-actual recipes people use to get good results with deep learning are rarely
-documented. Papers gloss over the process that led to their final results in
-order to present a cleaner story, and machine learning engineers working on
-commercial problems rarely have time to take a step back and generalize their
-process. Textbooks tend to eschew practical guidance and prioritize fundamental
-principles, even if their authors have the necessary experience in applied work
-to provide useful advice. When preparing to create this document, we couldn't
-find any comprehensive attempt to actually explain *how to get good results with
-deep learning*. Instead, we found snippets of advice in blog posts and on social
-media, tricks peeking out of the appendix of research papers, occasional case
-studies about one particular project or pipeline, and a lot of confusion. There
-is a vast gulf between the results achieved by deep learning experts and less
-skilled practitioners using superficially similar methods. At the same time,
-these very experts readily admit some of what they do might not be
-well-justified. As deep learning matures and has a larger impact on the world,
-the community needs more resources covering useful recipes, including all the
-practical details that can be so critical for obtaining good results.
+우리는 여러 해 동안 딥러닝 분야에서 일한 다섯 명의 연구자와 엔지니어로 구성된 팀입니다. 그 중 일부는 2006년부터 이 분야에서 일했습니다. 음성 인식에서 천문학에 이르기까지 여러 문제에 딥러닝을 적용하면서 많은 것을 배웠습니다. 이 문서는 신경망을 훈련하고, 신입 머신러닝 엔지니어를 교육하고, 딥러닝을 사용하는 동료들에게 조언을 했던 경험을 바탕으로 만들었습니다. 딥러닝이 학교 실험실 수준에서 수행되는 하나의 머신러닝 방법에서 수십억 명이 사용하는 제품을 강력하게 만드는 기술로 발전하는 것을 보는 것은 기쁜 일입니다. 하지만 딥러닝은 공학 분야로서는 아직 초창기입니다. 이 문서가 이 분야의 실험 방법을 체계화하는데 원동력이 되기를 바랍니다.
 
-We are a team of five researchers and engineers who have worked in deep learning
-for many years, some of us since as early as 2006. We have applied deep learning
-to problems in everything from speech recognition to astronomy, and learned a
-lot along the way. This document grew out of our own experience training neural
-networks, teaching new machine learning engineers, and advising our colleagues
-on the practice of deep learning. Although it has been gratifying to see deep
-learning go from a machine learning approach practiced by a handful of academic
-labs to a technology powering products used by billions of people, deep learning
-is still in its infancy as an engineering discipline and we hope this document
-encourages others to help systematize the field's experimental protocols.
+이 문서는 우리들이 수행했던 딥러닝 방식을 구체화하면서 나온 것이기 때문에 어떤 종류의 객관적 진실이 아니라 이 글을 쓸 당시의 의견입니다. 특히 하이퍼파라미터 튜닝과 씨름했던 노력이 이 가이드의 핵심입니다. 하지만 일하면서 마주쳤던 (또는 문제가 되었던) 다른 중요한 이슈도 다루고 있습니다. 이 작업의 의도는 우리가 믿는 것이 바뀜에 따라 발전하고 진화하는 살아있는 문서가 되는 것입니다. 예를 들어, 훈련 실패를 디버깅하고 감소시키는 자료는 최근 결과와 현재 진행 중인 분석을 바탕으로 하기 때문에 2년 전에는 쓸 수 없었을 것입니다. 필연적으로 이 조언의 일부는 새로운 결과와 향상된 워크플로를 담아내기 위해 업데이트되어야 할 것입니다. 우리는 *최적의* 딥러닝 레서피를 알지 못합니다. 이를 찾으려면 커뮤니티 구성원이 여러 다른 절차에 대해 쓰기 시작하고 토론해야 합니다. 이 플레이북을 업데이트할 수 있도록 이 조언에서 문제를 발견했다면 확실한 증거와 함께 다른 권장 사항을 제시해 주세요. 또한 하나의 커뮤니티로서 모범 사례를 만들어 갈 수 있도록 다른 권고 사항을 담은 다른 가이드나 플레이북을 환영합니다. 마지막으로 🤖 이모지가 있는 섹션은 더 많은 연구가 필요한 내용입니다. 이 플레이북을 쓰려고 했을 때 비로서 딥러닝 기술자의 워크플로에서 흥미롭고 도외시된 연구 질문이 얼마나 많은지 완전히 명확해졌습니다.
 
-This document came about as we tried to crystalize our own approach to deep
-learning and thus it represents the opinions of the authors at the time of
-writing, not any sort of objective truth. Our own struggles with hyperparameter
-tuning made it a particular focus of our guidance, but we also cover other
-important issues we have encountered in our work (or seen go wrong). Our
-intention is for this work to be a living document that grows and evolves as our
-beliefs change. For example, the material on debugging and mitigating training
-failures would not have been possible for us to write two years ago since it is
-based on recent results and ongoing investigations. Inevitably, some of our
-advice will need to be updated to account for new results and improved
-workflows. We do not know the *optimal* deep learning recipe, but until the
-community starts writing down and debating different procedures, we cannot hope
-to find it. To that end, we would encourage readers who find issues with our
-advice to produce alternative recommendations, along with convincing evidence,
-so we can update the playbook. We would also love to see alternative guides and
-playbooks that might have different recommendations so we can work towards best
-practices as a community. Finally, any sections marked with a 🤖 emoji are places
-we would like to do more research. Only after trying to write this playbook did
-it become completely clear how many interesting and neglected research questions
-can be found in the deep learning practitioner's workflow.
+## 새로운 프로젝트를 시작하기 위한 가이드
 
-## Guide for starting a new project
+튜닝 과정의 많은 결정은 프로젝트 초기에 한 번 결정되고 이따금 상황이 바뀌면 다시 돌아봅니다.
 
-Many of the decisions we make over the course of tuning can be made once at the
-beginning of a project and only occasionally revisited when circumstances
-change.
+아래 가이드는 다음과 같은 가정을 합니다:
 
-Our guidance below makes the following assumptions:
+-   문제 구성, 데이터 정제 등에 필요한 작업이 이미 충분히 수행되어 모델 구조와 훈련 설정에 시간을 투자하는 것이 적절합니다.
+-   훈련과 평가를 위해 준비된 파이프라인(pipeline)이 이미 있고 여러 가지 관심 대상 모델을 위해 훈련과 평가 작업을 쉽게 실행할 수 있습니다.
+-   적절한 측정 지표를 선택했고 구현했습니다. 이 값은 배포 환경에서 측정되는 것을 최대한 대표해야 합니다.
 
--   Enough of the essential work of problem formulation, data cleaning, etc. has
-    already been done that spending time on the model architecture and training
-    configuration makes sense.
--   There is already a pipeline set up that does training and evaluation, and it
-    is easy to execute training and prediction jobs for various models of
-    interest.
--   The appropriate metrics have been selected and implemented. These should be
-    as representative as possible of what would be measured in the deployed
-    environment.
+### 모델 아키텍처 선택
 
-### Choosing the model architecture
+***요약:*** *새로운 프로젝트를 시작할 때 이미 작동하는 모델을 재사용하세요.*
 
-***Summary:*** *When starting a new project, try to reuse a model that already
-works.*
+-   먼저 정립이 잘 되어 있고 널리 사용되는 모델 아키텍처를 선택해 작업하세요. 나중에 사용자 정의 모델을 만드는 것은 언제든지 가능합니다.
+-   모델 아키텍처는 일반적으로 모델 크기와 다른 세부 사항(예를 들면, 층 개수, 층 너비, 활성화 함수 종류)을 결정하는 다양한 하이퍼파라미터를 가집니다.
+    -   따라서 아키텍처 선택은 실제로 여러 다양한 모델군을 선택합니다(하이퍼파리미터 설정마다 하나의 모델에 해당됩니다).
+    -   [초기 설정 선택](#초기-설정-선택) 과 [모델 성능 향상을 위한 과학적 접근 방법](#모델-성능-향상을-위한-과학적-접근-방법)에서 모델 하이퍼파라미터 선택 문제를 생각해 보겠습니다.
+-   가능하면 주어진 문제와 가장 가까운 문제를 다룬 논문을 찾아 보고 이 모델을 재현하는 것을 출발점으로 삼으세요.
 
--   Choose a well established, commonly used model architecture to get working
-    first. It is always possible to build a custom model later.
--   Model architectures typically have various hyperparameters that determine
-    the model's size and other details (e.g. number of layers, layer width, type
-    of activation function).
-    -   Thus, choosing the architecture really means choosing a family of
-        different models (one for each setting of the model hyperparameters).
-    -   We will consider the problem of choosing the model hyperparameters in
-        [Choosing the initial configuration](#choosing-the-initial-configuration)
-        and
-        [A scientific approach to improving model performance](#a-scientific-approach-to-improving-model-performance).
--   When possible, try to find a paper that tackles something as close as
-    possible to the problem at hand and reproduce that model as a starting
-    point.
+### 옵티마이저(optimizer) 선택
 
-### Choosing the optimizer
+***요약:*** *현재 문제 유형에서 가장 많이 사용하는 옵티마이저로 시작하세요.*
 
-***Summary:*** *Start with the most popular optimizer for the type of problem at
-hand.*
+-   모든 종류의 머신러닝 문제와 모델 아키텍처에 "최상"인 옵티마이저는 없습니다. [옵티마이저 성능을 비교하는 것조차도 어려운 작업입니다](https://arxiv.org/abs/1910.05446). 🤖
+-   특히 새로운 프로젝트를 시작할 때는 잘 정립된 인기있는 옵티마이저를 사용하세요.
+    -   이상적으로는 동일한 문제 유형에서 가장 널리 사용되는 옵티마이저를 선택하세요.
+-   선택한 옵티마이저의 **\*****모든****\*** 하이퍼파라미터에 주의를 기울이세요.
+    -   많은 하이퍼파라미터를 가진 옵티마이저의 경우 최상의 설정을 찾기 위해 많은 튜닝 노력이 필요할 수 있습니다.
+    -   여러 다른 하이퍼파라미터(예를 들어, 아키텍처 하이퍼파라미터)에서 최상의 값을 찾기 위해 옵티마이저 하이퍼파라미터를 [성가신 파라미터](#identifying-scientific-nuisance-and-fixed-hyperparameters)로 취급하는 프로젝트 초기 단계에 특히 관련이 있습니다.
+    -   프로젝트 초기 단계에 간단한 옵티마이저(예를 들어 고정 모멘텀(momentum)이 고정된 SGD나 $\epsilon$, $\beta_{1}$, $\beta_{2}$가 고정된 아담(Adam))로 시작하고 나중에 더 일반적인 옵티마이저로 전환하는 것이 좋을 수 있습니다.
+-   우리가 선호하는 잘 정립된 옵티마이저는 다음과 같습니다(하지만 이게 전부는 아닙니다):
+    -   [모멘텀을 사용한 SGD](#what-are-the-update-rules-for-all-the-popular-optimization-algorithms) (우리는 네스테로프(Nesterov) 모멘텀을 좋아합니다)
+    -   모멘텀을 사용한 SGD보다 더 일반적인 [Adam과 NAdam](#what-are-the-update-rules-for-all-the-popular-optimization-algorithms). Adam에는 튜닝 가능한 하이퍼파라미터가 4개 있습니다. [이 하이퍼파라미터는 모두 중요합니다](https://arxiv.org/abs/1910.05446)!
+        - [Adam 하이퍼파라미터를 어떻게 튜닝해야 하나요?](Adam-하이퍼파라미터를-어떻게-튜닝해야-하나요)를 참고하세요.
 
--   No optimizer is the "best" across all types of machine learning problems and
-    model architectures. Even just
-    [comparing the performance of optimizers is a difficult task](https://arxiv.org/abs/1910.05446).
-    🤖
--   We recommend sticking with well-established, popular optimizers, especially
-    when starting a new project.
-    -   Ideally, choose the most popular optimizer used for the same type of
-        problem.
--   Be prepared to give attention to **\*****all****\*** hyperparameters of the
-    chosen optimizer.
-    -   Optimizers with more hyperparameters may require more tuning effort to
-        find the best configuration.
-    -   This is particularly relevant in the beginning stages of a project when
-        we are trying to find the best values of various other hyperparameters
-        (e.g. architecture hyperparameters) while treating optimizer
-        hyperparameters as
-        [nuisance parameters](#identifying-scientific-nuisance-and-fixed-hyperparameters).
-    -   It may be preferable to start with a simpler optimizer (e.g. SGD with
-        fixed momentum or Adam with fixed $\epsilon$, $\beta_{1}$, and
-        $\beta_{2}$) in the initial stages of the project and switch to a more
-        general optimizer later.
--   Well-established optimizers that we like include (but are not limited to):
-    -   [SGD with momentum](#what-are-the-update-rules-for-all-the-popular-optimization-algorithms)
-        (we like the Nesterov variant)
-    -   [Adam and NAdam](#what-are-the-update-rules-for-all-the-popular-optimization-algorithms),
-        which are more general than SGD with momentum. Note that Adam has 4
-        tunable hyperparameters
-        [and they can all matter](https://arxiv.org/abs/1910.05446)!
-        -   See
-            [How should Adam's hyperparameters be tuned?](#how-should-adams-hyperparameters-be-tuned)
+### 배치 크기 선택
 
-### Choosing the batch size
+***요약:*** *배치 크기는 훈련 속도를 결정하며 검증 세트 성능을 직접 튜닝하기 위해 사용해서는 안됩니다. 이상적인 배치 크기는 하드웨어에서 지원하는 최대 배치 크기인 경우가 많습니다.*
 
-***Summary:*** *The batch size governs the training speed and shouldn't be used
-to directly tune the validation set performance. Often, the ideal batch size
-will be the largest batch size supported by the available hardware.*
+-   배치 크기는 *훈련 속도*와 *계산 자원 소모*를 결정하는 핵심 요소입니다.
+-   배치 크기를 늘리면 종종 훈련 시간이 줄어듭니다. 이는 다음과 같은 이유로 매우 도움이 됩니다.
+    -   정해진 시간 안에 더 철저히 하이퍼파라미터를 튜닝할 수 있어 잠재적으로 더 좋은 최종 모델을 얻습니다.
+    -   개발 사이클의 지연을 감소하고 새로운 아이디어를 더 자주 테스트할 수 있습니다.
+-   배치 크기를 증가시켜서 자원 소모가 줄거나 늘어나거나 혹은 달라지지 않을 수 있습니다.
+-   배치 크기를 검증 세트 성능을 위해 튜닝할 파라미터로 다루어서는 *안됩니다*.
+    -   모든 하이퍼파라미터(특히 학습률(learning rate)과 규제(regularization) 하이퍼파라미터)가 잘 튜닝되고 훈련 스텝(step) 횟수가 충분하다면 어떤 배치 크기를 사용하더라도 최종 성능이 동일해야 합니다([Shallue et al. 2018](https://arxiv.org/abs/1811.03600) 참조).
+    - [검증 세트 성능을 높이기 위해 배치 크기를 직접 튜닝해서는 안되는 이유는 무엇인가요?](#검증-세트-성능을-높이기-위해-배치-크기를-직접-튜닝해서는-안되는-이유는-무엇인가요)를 참고하세요.
 
--   The batch size is a key factor in determining the *training time* and
-    *computing resource consumption*.
--   Increasing the batch size will often reduce the training time. This can be
-    highly beneficial because it, e.g.:
-    -   Allows hyperparameters to be tuned more thoroughly within a fixed time
-        interval, potentially resulting in a better final model.
-    -   Reduces the latency of the development cycle, allowing new ideas to be
-        tested more frequently.
--   Increasing the batch size may either decrease, increase, or not change the
-    resource consumption.
--   The batch size should *not be* treated as a tunable hyperparameter for
-    validation set performance.
-    -   As long as all hyperparameters are well-tuned (especially the learning
-        rate and regularization hyperparameters) and the number of training
-        steps is sufficient, the same final performance should be attainable
-        using any batch size (see
-        [Shallue et al. 2018](https://arxiv.org/abs/1811.03600)).
-    -   Please see [Why shouldn't the batch size be tuned to directly improve
-        validation set
-        performance?](#why-shouldnt-the-batch-size-be-tuned-to-directly-improve-validation-set-performance)
+#### 실현 가능한 배치 크기를 결정하고 훈련 처리량 추정하기
 
-#### Determining the feasible batch sizes and estimating training throughput
+-   어떤 모델과 옵티마이저에서 일반적으로 하드웨어에서 지원하는 배치 크기 범위가 있습니다. 제약 요소는 보통 가속기의 메모리입니다.
+-   안타깝게도 훈련 프로그램을 실행하거나 적어도 컴파일해 보지 않고 메모리에 맞는 배치 크기를 계산하기 어려울 수 있습니다.
+-   가장 쉬운 해결책은 일반적으로 가용 메모리를 초과할 때까지 여러 배치 크기(예를 들어, 2의 거듭제곱 크기)에서 몇 번의 훈련 스텝 동안 훈련 작업을 실행해 보는 것입니다.
+-   배치 크기마다 신뢰할만한 *훈련 처리량*을 추정하려면 충분히 오랫동안 훈련해야 합니다.
 
+<p align="center">훈련 처리량 = (# 초당 처리 샘플 개수)</p>
 
-<details><summary><em>[Click to expand]</em></summary>
+<p align="center">또는 이와 동일한 <em>스텝 당 시간</em>.</p>
 
-<br>
+<p align="center">스텝 당 시간 = (배치 크기) / (훈련 처리량)</p>
 
--   For a given model and optimizer, there will typically be a range of batch
-    sizes supported by the available hardware. The limiting factor is usually
-    accelerator memory.
--   Unfortunately, it can be difficult to calculate which batch sizes will fit
-    in memory without running, or at least compiling, the full training program.
--   The easiest solution is usually to run training jobs at different batch
-    sizes (e.g. increasing powers of 2) for a small number of steps until one of
-    the jobs exceeds the available memory.
--   For each batch size, we should train for long enough to get a reliable
-    estimate of the *training throughput*
+-   가속기 메모리가 아직 포화되지 않았을 때 배치 크기를 두 배로 늘리면 훈련 처리량도 두 배가 되어야 합니다(또는 적어도 두 배에 가까워야 합니다). 동일하게 스텝 당 시간은 배치 크기가 늘어남에 따라 일정해야 합니다(또는 적어도 거의 동일해야 합니다).
+-   그렇지 않다면 훈련 파이프라인에 I/O나 계산 노드 간의 동기화 같은 병목이 있습니다. 계속하기 전에 진단하고 올바르게 고칠 필요가 있습니다.
+-   훈련 처리량이 어떤 최대 배치 크기까지만 증가하면 하드웨어에서 더 큰 배치 크기를 지원하더라도 이 최대 배치 크기까지만 배치 크기를 늘려야 합니다.
+    -   큰 배치 크기를 사용하는 잇점은 훈련 처리량이 증가되는 가정을 바탕으로 합니다. 그렇지 않다면 병목 지점을 개선하거나 더 작은 배치 크기를 사용하세요.
+    -   **그레이디언트 누적(gradient accumulation)**은 하드웨어가 지원하는 것보다 큰 배치 크기를 시뮬레이션합니다. 따라서 처리량에 대한 이득이 없습니다. 일반적으로 응용 작업에서는 피해야 합니다.
+-   이 단계는 모델이나 옵티마이저를 바꿀 때 마다 반복해야 합니다(예를 들어 모델 아키텍처가 달라지면 더 큰 배치 크기가 메모리에 맞을 수 있습니다).
 
-<p align="center">training throughput = (# examples processed per second)</p>
+#### 훈련 시간을 최소화하는 배치 크기 선택하기
 
-<p align="center">or, equivalently, the <em>time per step</em>.</p>
+<p align="center">훈련 시간 = (스텝 당 시간) x (총 스텝 횟수)</p>
 
-<p align="center">time per step = (batch size) / (training throughput)</p>
+-   종종 가능한 모든 배치 크기에 대해 스텝 당 시간이 거의 일정하다고 가정할 수 있습니다. 병렬 컴퓨팅에 대한 오버헤드(overhead)가 없고 모든 훈련 병목을 진단해서 고쳤을 때 그렇습니다(훈련 병목을 진단하는 방법은 [이전 섹션](#실현-가능한-배치-크기를-결정하고-훈련-처리량-추정하기)을 참고하세요). 실제로는 보통 배치 크기를 증가시키면 적어도 약간의 오버헤드가 있습니다.
+-   배치 크기가 늘어남에 따라 정해진 성능 목표에 도달하기 위해 필요한 총 스텝 횟수는 일반적으로 줄어듭니다(배치 크기를 바꾸고 관련된 모든 하이퍼파라미터를 다시 튜닝했을 때입니다. [Shallue et al. 2018](https://arxiv.org/abs/1811.03600)).
+    -   예를 들어, 배치 크기를 두 배로 늘리면 필요한 총 스텝 횟수가 절반으로 줄어들 수 있습니다. 이를 **완벽한 스케일링**이라고 합니다.
+    -   완벽한 스케일링은 임계 배치 크기까지 모든 배치 크기에서 유지되며 그 이상을 넘어가면 이득이 감소합니다.
+    -   결국 배치 크기를 증가시켜도 더 이상 훈련 스텝 횟수가 감소하지 않습니다(하지만 늘어나지는 않습니다).
+-   따라서 훈련 시간을 최소화하는 배치 크기는 일반적으로 필요한 훈련 스텝 횟수를 줄일 수 있는 가장 큰 배치 크기입니다.
+    -   이 배치 크기는 데이터셋, 모델, 옵티마이저에 따라 다릅니다. 모든 새로운 문제에 이 값을 실험적으로 찾는 것보다 계산할 수 있는 방법은 아직 미해결 문제입니다.
+    -   배치 크기를 비교할 때 (훈련 샘플 제공 개수를 고정하고 모든 실험을 실행하는) 샘플 예산/[에포크(epoch)](https://developers.google.com/machine-learning/glossary#epoch) 예산과 (훈련 스텝 횟수를 고정하고 모든 실험을 실행하는) 스텝 예산의 차이를 주의하세요. 🤖
+        -   에포크 예산으로 배치 크기를 비교하면 더 큰 배치 크기가 훈련 스텝 횟수를 줄여 여전히 의미있는 속도 향상을 제공하더라도 완벽한 스케일링 영역만 조사할 뿐입니다.
+    -   종종 하드웨어에서 지원하는 가장 큰 배치 크기가 임계 배치 크기보다 작을 것입니다. 따라서 (실험을 수행하지 않는) 좋은 경험 법칙은 가능한 가장 큰 배치 크기를 사용하는 것입니다.
+-   훈련 시간이 늘어난다면 더 큰 배치 크기를 사용해도 소용이 없습니다.
 
--   When the accelerators aren't yet saturated, if the batch size doubles, the
-    training throughput should also double (or at least nearly double).
-    Equivalently, the time per step should be constant (or at least nearly
-    constant) as the batch size increases.
--   If this is not the case then the training pipeline has a bottleneck such as
-    I/O or synchronization between compute nodes. This may be worth diagnosing
-    and correcting before proceeding.
--   If the training throughput increases only up to some maximum batch size,
-    then we should only consider batch sizes up to that maximum batch size, even
-    if a larger batch size is supported by the hardware.
-    -   All benefits of using a larger batch size assume the training throughput
-        increases. If it doesn't, fix the bottleneck or use the smaller batch
-        size.
-    -   **Gradient accumulation** simulates a larger batch size than the
-        hardware can support and therefore does not provide any throughput
-        benefits. It should generally be avoided in applied work.
--   These steps may need to be repeated every time the model or optimizer is
-    changed (e.g. a different model architecture may allow a larger batch size
-    to fit in memory).
+#### 자원 소비량을 최소화하는 배치 크기 선택하기
 
-</details>
+-   배치 크기 증가와 연관된 자원 비용은 두 종류입니다.
+    1.  *사전 비용*, 예를 들어 새로운 하드웨어 구입 또는 다중 GPU / 다중 TPU 훈련을 위한 훈련 파이프라인 재작성
+    2.  *사용 비용*, 예를 들어 팀의 자원 예산에 대한 청구서, 클라우드 제공자의 청구서, 전기 / 유지보수 비용
+-   배치 크기를 증가시키기 위해 상당한 사전 비용이 발생한다면 프로젝트가 성숙해지고 비용-편익(cost-benefit) 트레이드오프(tradeoff)를 평가하기 쉬울 때까지 배치 크기 증가를 미루는 것이 좋습니다. 다중 호스트 병렬 훈련 프로그램을 구현하는 일은 [버그](#considerations-for-multi-host-pipelines)와 [미묘한 문제](#batch-normalization-implementation-details)를 발생시킬 수 있으므로 간단한 파이프라인으로 시작하는 것이 낫습니다. (반면에 많은 튜닝 실험이 필요한 초기에 훈련 속도를 높이면 큰 도움이 됩니다)
+-   (여러 종류의 비용을 포함하는) 총 사용 비용을 "자원 소비량"이라고 부릅니다. 자원 소비량을 다음과 같이 나눌 수 있습니다.
 
-#### Choosing the batch size to minimize training time
+<p align="center">자원 소비량 = (스텝 당 자원 소비량) x (총 스텝 횟수)</p>
 
-<details><summary><em>[Click to expand]</em></summary>
+-   일반적으로 배치 크기를 증가시키면 [총 스텝 횟수를 줄일 수 있습니다](#훈련-시간을-최소화하는-배치-크기-선택하기). 자원 소비량이 증가하는지 감소하는지는 스텝 당 소비량이 어떻게 변하는지에 따라 결정됩니다.
+    -   배치 크기를 증가시키면 자원 소비량이 *감소*할 수 있습니다. 예를 들어, 작은 배치 크기에서 사용한 같은 하드웨어에서 (스텝 당 시간이 약간만 늘어나고) 큰 배치 크기로 각 스텝을 실행할 수 있다면 스텝 당 자원 소비량의 증가는 스텝 횟수의 감소로 상쇄될 수 있습니다.
+    -   배치 크기를 증가해도 자원 소비량이 *변하지 않을* 수 있습니다. 예를 들어, 배치 크기를 두 배로 늘려서 필요한 스텝 횟수를 절반으로 줄이고 사용하는 GPU 개수가 두 배로 늘어 난다면 (GPU 시간 측면의) 총 소비량은 변하지 않을 것입니다.
+    -   배치 크기를 증가하면 자원 소비량이 "증가"할 수 있습니다. 예를 들어, 배치 크기를 증가시키기 위해 하드웨어를 업그레이드해야 한다면 스텝 당 소비량의 증가가 스텝 횟수의 감소보다 클 수 있습니다.
 
-<br>
+#### 배치 크기를 바꾸면 대부분의 하이퍼파라미터를 다시 튜닝해야 합니다.
 
+-   대부분 하이퍼파라미터의 최적값은 배치 크기에 민감합니다. 따라서 배치 크기를 바꾸면 일반적으로 튜닝 과정을 모두 다시 시작해야 합니다.
+-   배치 크기와 상호작용이 가장 크고 따라서 배치 크기마다 별도로 튜닝하는 것이 정말 중요한 하이퍼파라미터는 옵티마이저 하이퍼파라미터(예를 들면, 학습률과 모멘텀)와 규제 하이퍼파라미터입니다.
+-   프로젝트 초기에 배치 크기를 선택할 때 이를 유념하세요. 나중에 배치 크기를 바꾸어야 한다면 새로운 배치 크기에 대해서 모든 것을 다시 튜닝하는 일은 어렵고, 시간이 많이 소모되고, 비용이 많이 들 수 있습니다.
 
-<p align="center">Training time = (time per step) x (total number of steps)</p>
+#### 배치 정규화와 배치 크기의 상호작용 방식
 
--   We can often consider the time per step to be approximately constant for all
-    feasible batch sizes. This is true when there is no overhead from parallel
-    computations and all training bottlenecks have been diagnosed and corrected
-    (see the
-    [previous section](#determining-the-feasible-batch-sizes-and-estimating-training-throughput)
-    for how to identify training bottlenecks). In practice, there is usually at
-    least some overhead from increasing the batch size.
--   As the batch size increases, the total number of steps needed to reach a
-    fixed performance goal typically decreases (provided all relevant
-    hyperparameters are re-tuned when the batch size is changed;
-    [Shallue et al. 2018](https://arxiv.org/abs/1811.03600)).
-    -   E.g. Doubling the batch size might halve the total number of steps
-        required. This is called **perfect scaling**.
-    -   Perfect scaling holds for all batch sizes up to a critical batch size,
-        beyond which one achieves diminishing returns.
-    -   Eventually, increasing the batch size no longer reduces the number of
-        training steps (but never increases it).
--   Therefore, the batch size that minimizes training time is usually the
-    largest batch size that still provides a reduction in the number of training
-    steps required.
-    -   This batch size depends on the dataset, model, and optimizer, and it is
-        an open problem how to calculate it other than finding it experimentally
-        for every new problem. 🤖
-    -   When comparing batch sizes, beware the distinction between an example
-        budget/[epoch](https://developers.google.com/machine-learning/glossary#epoch)
-        budget (running all experiments while fixing the number of training
-        example presentations) and a step budget (running all experiments with
-        the number of training steps fixed).
-        -   Comparing batch sizes with an epoch budget only probes the perfect
-            scaling regime, even when larger batch sizes might still provide a
-            meaningful speedup by reducing the number of training steps
-            required.
-    -   Often, the largest batch size supported by the available hardware will
-        be smaller than the critical batch size. Therefore, a good rule of thumb
-        (without running any experiments) is to use the largest batch size
-        possible.
--   There is no point in using a larger batch size if it ends up increasing the
-    training time.
+-   배치 정규화는 복잡하고 일반적으로 통계치를 계산하기 위해 그레이디언트 계산과 다른 배치 크기를 사용해야 합니다. 자세한 내용은 [배치 정규화](#batch-normalization-implementation-details) 섹션을 참고하세요.
 
-</details>
+### 초기 설정 선택하기
 
-#### Choosing the batch size to minimize resource consumption
-
-<details><summary><em>[Click to expand]</em></summary>
-
-<br>
-
-
--   There are two types of resource costs associated with increasing the batch
-    size:
-    1.  *Upfront costs*, e.g. purchasing new hardware or rewriting the training
-        pipeline to implement multi-GPU / multi-TPU training.
-    2.  *Usage costs*, e.g. billing against the team's resource budgets, billing
-        from a cloud provider, electricity / maintenance costs.
--   If there are significant upfront costs to increasing the batch size, it
-    might be better to defer increasing the batch size until the project has
-    matured and it is easier to assess the cost-benefit tradeoff. Implementing
-    multi-host parallel training programs can introduce
-    [bugs](#considerations-for-multi-host-pipelines) and
-    [subtle issues](#batch-normalization-implementation-details) so it is
-    probably better to start off with a simpler pipeline anyway. (On the other
-    hand, a large speedup in training time might be very beneficial early in the
-    process when a lot of tuning experiments are needed).
--   We refer to the total usage cost (which may include multiple different kinds
-    of costs) as the "resource consumption". We can break down the resource
-    consumption into the following components:
-
-<p align="center">Resource consumption = (resource consumption per step) x (total number of steps)</p>
-
--   Increasing the batch size usually allows us to
-    [reduce the total number of steps](#choosing-the-batch-size-to-minimize-training-time).
-    Whether the resource consumption increases or decreases will depend on how
-    the consumption per step changes.
-    -   Increasing the batch size might *decrease* the resource consumption. For
-        example, if each step with the larger batch size can be run on the same
-        hardware as the smaller batch size (with only a small increase in time
-        per step), then any increase in the resource consumption per step might
-        be outweighed by the decrease in the number of steps.
-    -   Increasing the batch size might *not change* the resource consumption.
-        For example, if doubling the batch size halves the number of steps
-        required and doubles the number of GPUs used, the total consumption (in
-        terms of GPU-hours) will not change.
-    -   Increasing the batch size might *increase* the resource consumption. For
-        example, if increasing the batch size requires upgraded hardware, the
-        increase in consumption per step might outweigh the reduction in the
-        number of steps.
-
-</details>
-
-#### Changing the batch size requires re-tuning most hyperparameters
-
-<details><summary><em>[Click to expand]</em></summary>
-
-<br>
-
-
--   The optimal values of most hyperparameters are sensitive to the batch size.
-    Therefore, changing the batch size typically requires starting the tuning
-    process all over again.
--   The hyperparameters that interact most strongly with the batch size, and therefore are most important to tune separately for each batch size, are the optimizer hyperparameters (e.g. learning rate, momentum) and the regularization hyperparameters.
--   Keep this in mind when choosing the batch size at the start of a project. If
-    you need to switch to a different batch size later on, it might be
-    difficult, time consuming, and expensive to re-tune everything for the new
-    batch size.
-
-</details>
-
-#### How batch norm interacts with the batch size
-
-<details><summary><em>[Click to expand]</em></summary>
-
-<br>
-
-
--   Batch norm is complicated and, in general, should use a different batch size
-    than the gradient computation to compute statistics. See the
-    [batch norm section](#batch-normalization-implementation-details) for a
-    detailed discussion.
-
-</details>
-
-### Choosing the initial configuration
-
--   Before beginning hyperparameter tuning we must determine the starting point.
-    This includes specifying (1) the model configuration (e.g. number of
-    layers), (2) the optimizer hyperparameters (e.g. learning rate), and (3) the
-    number of training steps.
--   Determining this initial configuration will require some manually configured
-    training runs and trial-and-error.
+-   하이퍼파라미터 튜닝을 시작하기 전에 시작점을 결정해야 합니다. 여기에는 (1) 모델 설정 (예를 들면, 층 개수), (2) 옵티마이저 하이퍼파라미터 (예를 들면, 학습률), (3) 훈련 스텝 횟수가 포함됩니다.
+-   이런 초기 설정을 결정하려면 약간의 수동 설정으로 훈련을 실행하고 시행 착오를 겪어 봐야 합니다.
+-   이 가이드의 원칙은 "합리적인" 결과를 얻을 수 있는 간단하고, 비교적 빠르며 자원 소모량이 적은 설정을 찾는 것입니다.
+    -   "간단함"은 가능한 부가 기능을 피하는 것입니다. 이런 기능은 나중에 언제든지 추가할 수 있습니다. 부가 기능이 나중에 도움이 된다고 하더라도 초기 설정에 이를 추가하면 도움이 되지 않는 기능을 튜닝하는데 시간을 낭비하거나 불필요한 복잡도를 만들 수 있습니다.
+        -   예를 들어, 멋진 학습률 감쇠를 추가하기 전에 고정 학습률로 시작하세요.
 -   Our guiding principle is to find a simple, relatively fast, relatively
     low-resource-consumption configuration that obtains a "reasonable" result.
     -   "Simple" means avoiding bells and whistles wherever possible; these can
@@ -536,11 +321,6 @@ the nuisance hyperparameters. Choose the search space of nuisance
 hyperparameters to balance resource costs with scientific value.*
 
 #### Identifying scientific, nuisance, and fixed hyperparameters
-
-<details><summary><em>[Click to expand]</em></summary>
-
-<br>
-
 -   For a given goal, all hyperparameters will be either **scientific
     hyperparameters**, **nuisance hyperparameters**, or **fixed
     hyperparameters**.
@@ -681,14 +461,7 @@ hyperparameters to balance resource costs with scientific value.*
         of values that work well in each of the optimizers is typically
         different by several orders of magnitude.
 
-</details>
-
 #### Creating a set of studies
-
-<details><summary><em>[Click to expand]</em></summary>
-
-<br>
-
 
 -   Once we have identified the scientific and nuisance hyperparameters, we
     design a "study" or sequence of studies to make progress towards the
@@ -744,14 +517,7 @@ hyperparameters to balance resource costs with scientific value.*
         search algorithm, we need to make sure somehow that it searches the
         scientific parameters uniformly.
 
-</details>
-
 #### Striking a balance between informative and affordable experiments
-
-<details><summary><em>[Click to expand]</em></summary>
-
-<br>
-
 
 -   When designing a study or sequence of studies, we need to allocate a limited
     budget in order to adequately achieve the following three desiderata:
@@ -790,8 +556,6 @@ hyperparameters to balance resource costs with scientific value.*
         enough space extensively enough) to fairly compare the scientific
         hyperparameters (as described in greater detail
         [below](#extracting-insight-from-experimental-results)).
-
-</details>
 
 ### Extracting insight from experimental results
 
@@ -839,11 +603,6 @@ if issues are discovered, revise the experiments and rerun them.*
 
 #### Identifying bad search space boundaries
 
-<details><summary><em>[Click to expand]</em></summary>
-
-<br>
-
-
 -   A search space is suspicious if the best point sampled from it is close to
     its boundary. We might find an even better point if we expanded the search
     range in that direction.
@@ -874,14 +633,7 @@ if issues are discovered, revise the experiments and rerun them.*
         preventing it from accessing higher learning
         rates](#how-can-optimization-failures-be-debugged-and-mitigated).
 
-</details>
-
 #### Not sampling enough points in the search space
-
-<details><summary><em>[Click to expand]</em></summary>
-
-<br>
-
 
 -   In general,
     [it can be very difficult to know](#how-many-trials-are-needed-to-get-good-results-with-quasi-random-search)
@@ -892,14 +644,7 @@ if issues are discovered, revise the experiments and rerun them.*
     repeatedly looking at various hyperparameter axis plots and trying to get a
     sense of how many points are in the "good" region of the search space.
 
-</details>
-
 #### Examining the training curves
-
-<details><summary><em>[Click to expand]</em></summary>
-
-<br>
-
 
 ***Summary:*** *Examining the training curves is an easy way to identify common
 failure modes and can help us prioritize what actions to take next.*
@@ -987,14 +732,7 @@ failure modes and can help us prioritize what actions to take next.*
     training loss *increasing* during training usually indicates a bug in the
     training pipeline).
 
-</details>
-
 #### Detecting whether a change is useful with isolation plots
-
-<details><summary><em>[Click to expand]</em></summary>
-
-<br>
-
 
 <p align="center" id="figure-2">
 <img src="assets/isolation_plot.png" width="49%" alt="Isolation plot that investigates the best value of weight decay for ResNet-50
@@ -1027,14 +765,7 @@ trained on ImageNet.">
     axis plot and taking the best trial in each vertical slice defined by the
     buckets.
 
-</details>
-
 #### Automate generically useful plots
-
-<details><summary><em>[Click to expand]</em></summary>
-
-<br>
-
 -   The more effort it is to generate plots, the less likely we are to look at
     them as much as we should, so it behooves us to set up our infrastructure to
     automatically produce as many of them as possible.
@@ -1047,8 +778,6 @@ trained on ImageNet.">
     be useful. Although the ones described above are a good starting point, to
     paraphrase Geoffrey Hinton, "Every time you plot something new, you learn
     something new."
-
-</details>
 
 ### Determining whether to adopt a training pipeline change or hyperparameter configuration
 
@@ -1218,11 +947,6 @@ should be tuned at all.*
             learning rate schedule.
 
 #### Algorithm for picking an initial candidate for max_train_steps using a learning rate sweep
-
-<details><summary><em>[Click to expand]</em></summary>
-
-<br>
-
 -   This procedure assumes it is possible to not only "perfectly" fit the
     training set, but to do so using a constant learning rate schedule.
 -   If it is possible to perfectly fit the entire training set, then there must
@@ -1241,8 +965,6 @@ should be tuned at all.*
         is necessary.
     -   At a minimum, we should check that the optimal learning rate in the
         study is not at the boundary of the search space.
-
-</details>
 
 ### Deciding how long to train when training is compute-bound
 
@@ -1280,11 +1002,6 @@ should be tuned at all.*
         is using all the extra training steps with too small of a learning rate.
 
 #### Round 1
-
-<details><summary><em>[Click to expand]</em></summary>
-
-<br>
-
 -   Unfortunately, there is no guarantee that good hyperparameters found in
     short, incomplete training are still good choices when training length is
     significantly increased. However, for some kinds of hyperparameters, they
@@ -1326,14 +1043,7 @@ should be tuned at all.*
                 Meta-Optimization](https://arxiv.org/abs/1803.02021) describes
                 the dangers of trying to pick learning rates myopically.
 
-</details>
-
 #### Round 2
-
-<details><summary><em>[Click to expand]</em></summary>
-
-<br>
-
 -   Run the best hyperparameter configuration from Round 1.
 -   **(Speculation)** 🤖 Use the extra steps to extend the period of training at
     a high learning rate.
@@ -1354,8 +1064,6 @@ should be tuned at all.*
             up.
         -   New ideas go through a pipeline that progressively derisks them
             using increasingly long-running experiments from Step i to Step i+1.
-
-</details>
 
 ## Additional guidance for the training pipeline
 
@@ -1395,11 +1103,6 @@ task-dependent; use a profiler and look out for common issues.*
 evaluations at regular step intervals, not regular time intervals.*
 
 #### Evaluation settings
-
-<details><summary><em>[Click to expand]</em></summary>
-
-<br>
-
 -   There are several settings in which we can evaluate the performance of our
     models.
     -   **Online evaluation** - metrics are collected when the model is serving
@@ -1420,14 +1123,7 @@ evaluations at regular step intervals, not regular time intervals.*
         offline evaluation, without sacrificing the reliability of the signal we
         get during training.
 
-</details>
-
 #### Setting up periodic evaluations
-
-<details><summary><em>[Click to expand]</em></summary>
-
-<br>
-
 -   We run periodic evaluations during training to monitor its progress in real
     time, to
     [facilitate retrospective model checkpoint selection](#saving-checkpoints-and-retrospectively-selecting-the-best-checkpoint),
@@ -1461,14 +1157,7 @@ evaluations at regular step intervals, not regular time intervals.*
         [SavedModels](https://www.tensorflow.org/guide/saved_model) make it easy
         to do ad-hoc model inspection after evaluation jobs finish.
 
-</details>
-
 #### Choosing a sample for periodic evaluation
-
-<details><summary><em>[Click to expand]</em></summary>
-
-<br>
-
 -   The periodic evaluation job might not run fast enough to compute metrics on
     the full offline evaluation set in a reasonable amount of time. This often
     necessitates sampling data for periodic evaluation.
@@ -1494,8 +1183,6 @@ evaluations at regular step intervals, not regular time intervals.*
             the number of examples predicted correctly to get more insight into
             accuracy improvements (.05 sensitivity improvement sounds exciting,
             but was it just one more example correct?).
-
-</details>
 
 ### Saving checkpoints and retrospectively selecting the best checkpoint
 
@@ -1579,11 +1266,6 @@ multi-host training can make it very easy to introduce bugs!*
 ## FAQs
 
 ### What is the best learning rate decay schedule family?
-
-<details><summary><em>[Click to expand]</em></summary>
-
-<br>
-
 -   It’s an open problem. It’s not clear how to construct a set of rigorous
     experiments to confidently answer what the "best" LR decay schedule is.
 -   Although we don't know the best schedule family, we're confident that it’s
@@ -1592,8 +1274,6 @@ multi-host training can make it very easy to introduce bugs!*
     optimization process. Having some sort of schedule makes it more likely for
     the model to hit a good learning rate.
 
-</details>
-
 ### Which learning rate decay should I use as a default?
 
 <details><summary><em>[Click to expand]</em></summary>
@@ -1601,8 +1281,6 @@ multi-host training can make it very easy to introduce bugs!*
 
 -   Our preference is either linear decay or cosine decay, and a bunch of other
     schedule families are probably good too.
-
-</details>
 
 ### Why do some papers have complicated learning rate schedules?
 
@@ -1632,8 +1310,6 @@ multi-host training can make it very easy to introduce bugs!*
     -   Before publishing results that used such a schedule, please try to make
         it fully reproducible.
 
-</details>
-
 ### How should Adam’s hyperparameters be tuned?
 
 <details><summary><em>[Click to expand]</em></summary>
@@ -1649,8 +1325,6 @@ multi-host training can make it very easy to introduce bugs!*
     -   If 25+ trials, tune the learning rate, $\beta_1$ and $\epsilon$.
     -   If one can run substantially more than 25 trials, additionally tune
         $\beta_2$.
-
-</details>
 
 ### Why use quasi-random search instead of more sophisticated black box optimization algorithms during the exploration phase of tuning?
 
@@ -1739,8 +1413,6 @@ multi-host training can make it very easy to introduce bugs!*
     high-parallelism regime since Bayesian optimization has no opportunity to
     observe the results of previous trials.
 
-</details>
-
 ### Where can I find an implementation of quasi-random search?
 
 <details><summary><em>[Click to expand]</em></summary>
@@ -1757,8 +1429,6 @@ multi-host training can make it very easy to introduce bugs!*
     -   In 1-2 dimensions, grid search is also acceptable, although not in
         higher dimensions (see
         [Bergstra & Bengio, 2012](https://www.jmlr.org/papers/v13/bergstra12a.html)).
-
-</details>
 
 ### How many trials are needed to get good results with quasi-random search?
 
@@ -1784,8 +1454,6 @@ Box plots of the best performances for each trial budget are plotted above.
         between re-trains of this model on different random seeds, with fixed
         hyperparameters, which for this workload might be around +/- 0.1% on a
         validation error rate of \~23%.
-
-</details>
 
 ### How can optimization failures be debugged and mitigated?
 
@@ -1973,8 +1641,6 @@ scale).">
 -   If we need to do extremely aggressive gradient clipping to deal with our
     instability issues, then we might as well reduce the learning rate.
 
-</details>
-
 ### Why do you call the learning rate and other optimization parameters hyperparameters? They are not parameters of any prior distribution.
 
 <details><summary><em>[Click to expand]</em></summary>
@@ -2000,8 +1666,6 @@ scale).">
     paper, and we would encourage others to use "metaparameter" instead in most
     contexts.
 
-</details>
-
 ### Why shouldn't the batch size be tuned to directly improve validation set performance?
 
 <details><summary><em>[Click to expand]</em></summary>
@@ -2014,14 +1678,7 @@ scale).">
 - In addition, [the number of training steps may need to be adjusted](#choosing-the-batch-size-to-minimize-training-time) when changing the batch size.
 -   Once all these effects are taken into account, there is currently no convincing evidence that the batch size affects the maximum achievable validation performance (see [Shallue et al. 2018](https://arxiv.org/abs/1811.03600)).
 
-</details>
-
 ### What are the update rules for all the popular optimization algorithms?
-
-<details><summary><em>[Click to expand]</em></summary>
-
-<br>
-
 #### Stochastic gradient descent (SGD)
 
 $$\theta_{t+1} = \theta_{t} - \eta_t \nabla \mathcal{l}(\theta_t)$$
@@ -2075,8 +1732,6 @@ $$v_{t+1} = \beta_2 v_{t} + (1 - \beta_2) \nabla \mathcal{l} (\theta_t)^2$$
 $$b_{t+1} = \frac{\sqrt{1 - \beta_2^{t+1}}}{1 - \beta_1^{t+1}}$$
 
 $$\theta_{t+1} = \theta_{t} - \alpha_t \frac{\beta_1 m_{t+1} + (1 - \beta_1) \nabla \mathcal{l} (\theta_t)}{\sqrt{v_{t+1}} + \epsilon} b_{t+1}$$
-
-</details>
 
 ## Acknowledgments
 

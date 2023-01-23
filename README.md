@@ -1,17 +1,17 @@
-# Deep Learning Tuning Playbook
+# 딥러닝 튜닝 플레이북
 
-*This is not an officially supported Google product.*
+*이 저장소는 공식적인 구글 제품이 아닙니다.*
 
 **Varun Godbole<sup>&dagger;</sup>, George E. Dahl<sup>&dagger;</sup>, Justin Gilmer<sup>&dagger;</sup>, Christopher J. Shallue<sup>&Dagger;</sup>, Zachary Nado<sup>&dagger;</sup>**
 
 
-&dagger; Google Research, Brain Team
+&dagger; 구글 리서치(Research), 브레인(Brain) 팀
 
-&Dagger; Harvard University
+&Dagger; 하버드 대학
 
-## Table of Contents
+## 목차
 
--   [Who is this document for?](#who-is-this-document-for)
+-   [누구를 위한 문서인가요?](#누구를-위한-문서인가요)
 -   [Why a tuning playbook?](#why-a-tuning-playbook)
 -   [Guide for starting a new project](#guide-for-starting-a-new-project)
     -   [Choosing the model architecture](#choosing-a-model-architecture)
@@ -42,21 +42,17 @@
 -   [Citing](#citing)
 -   [Contributing](#contributing)
 
-## Who is this document for?
+## 누구를 위한 문서인가요?
 
-This document is for engineers and researchers (both individuals and teams)
-interested in **maximizing the performance of deep learning models**. We assume
-basic knowledge of machine learning and deep learning concepts.
+**딥러닝(deep learning) 모델의 성능을 극대화**하려는 엔지니어나 연구자 개인과 팀 모두를 위한 문서입니다. 독자들이 머신러닝(machine learning)과 딥러닝의 기본적인 개념을 알고 있다고 가정합니다.
 
-Our emphasis is on the **process of hyperparameter tuning**. We touch on other
-aspects of deep learning training, such as pipeline implementation and
-optimization, but our treatment of those aspects is not intended to be complete.
+이 문서는 **하이퍼파라미터 튜닝(hyperparameter tuning) 과정**을 강조합니다. 파이프라인 구현과 최적화 같은 딥러닝 훈련의 다른 면을 다루지만 이에 대해서는 완벽한 내용을 제공하지는 않습니다.
 
-We assume the machine learning problem is a supervised learning problem or
-something that looks a lot like one (e.g. self-supervised). That said, some of
-the prescriptions in this document may also apply to other types of problems.
+머신러닝 문제를 지도 학습 문제나 이와 매우 비슷한 어떤 것(예를 들면 자기 지도 학습(self-supervised learning))으로 가정합니다. 하지만 이 문서에 담긴 일부 가이드는 다른 종류의 문제에도 적용할 수 있습니다.
 
-## Why a tuning playbook?
+## 왜 튜닝 플레이북인가요?
+
+실전에서 잘 동작하는 심층 신경망을 만들려면 엄청난 노력과 추측이 필요합니다. 게다가 좋은 결과를 얻으려고 딥러닝에 적용하는 실전 레서피는 거의 문서와 되어 있지 않습니다. 논문은 말끔한 내용으로 채우기 위해 최종 결과를 얻기 위한 과정을 상세히 다루지 않습니다. 상업적인 제품을 다루는 머신러닝 엔지니어에게는 잠시 숨을 돌리고 처리 과정을 일반화할 시간이 없습니다. 교과서는 실용적인 가이드를 피하고 기본 원리를 우선시하는 경향이 있습니다. 심지어 저자들이 유용한 가이드를 제공하는 데 필요한 응용 작업에 경험을 가지고 있는 경우에도 그렇습니다.
 
 Currently, there is an astonishing amount of toil and guesswork involved in
 actually getting deep neural networks to work well in practice. Even worse, the

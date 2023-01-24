@@ -210,19 +210,19 @@
 
 고수준에서 증분 튜닝 전략은 다음 단계를 반복하는 것입니다:
 
-1.  Identify an appropriately-scoped goal for the next round of experiments.
-2.  Design and run a set of experiments that makes progress towards this goal.
-3.  Learn what we can from the results.
-4.  Consider whether to launch the new best configuration.
+1.  다음 실험을 위해 적절한 범위의 목표를 설정합니다.
+2.  이 목표에 다가가는 일련의 실험을 설계하고 실행합니다.
+3.  결과로부터 배웁니다.
+4.  새로운 최상의 설정을 출시할지 고려합니다.
 
-The remainder of this section will consider this strategy in much greater
-detail.
+이 절의 나머지 부분에서 이 전략을 더 상세하게 다루겠습니다.
 
-### Exploration vs exploitation
+### 탐험 vs 활용
 
-***Summary:*** *Most of the time, our primary goal is to gain insight into the
-problem.*
+***요약:*** *대부분의 경우 주요 목표는 문제에 대한 통찰을 얻는 것입니다.*
 
+-   검증 세트의 성능을 최대화하는데 대부분의 시간을 사용한다고 생각할 수 있지만 실제로 문제에 대한 통찰을 얻는데 많은 시간을 사용하고 검증 세트 오류에 과도하게 집중하는 시간은 비교적 적습니다.
+    -   다른 말로 하면,
 -   Although one might think we would spend most of our time trying to maximize
     performance on the validation set, in practice we spend the majority of our
     time trying to gain insight into the problem, and comparatively little time

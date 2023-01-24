@@ -175,85 +175,40 @@
 -   이런 초기 설정을 결정하려면 약간의 수동 설정으로 훈련을 실행하고 시행 착오를 겪어 봐야 합니다.
 -   이 가이드의 원칙은 "합리적인" 결과를 얻을 수 있는 간단하고, 비교적 빠르며 자원 소모량이 적은 설정을 찾는 것입니다.
     -   "간단함"은 가능한 부가 기능을 피하는 것입니다. 이런 기능은 나중에 언제든지 추가할 수 있습니다. 부가 기능이 나중에 도움이 된다고 하더라도 초기 설정에 이를 추가하면 도움이 되지 않는 기능을 튜닝하는데 시간을 낭비하거나 불필요한 복잡도를 만들 수 있습니다.
-        -   예를 들어, 멋진 학습률 감쇠를 추가하기 전에 고정 학습률로 시작하세요.
--   Our guiding principle is to find a simple, relatively fast, relatively
-    low-resource-consumption configuration that obtains a "reasonable" result.
-    -   "Simple" means avoiding bells and whistles wherever possible; these can
-        always be added later. Even if bells and whistles prove helpful down the
-        road, adding them in the initial configuration risks wasting time tuning
-        unhelpful features and/or baking in unnecessary complications.
-        -   For example, start with a constant learning rate before adding fancy
-            decay schedules.
-    -   Choosing an initial configuration that is fast and consumes minimal
-        resources will make hyperparameter tuning much more efficient.
-        -   For example, start with a smaller model.
-    -   "Reasonable" performance depends on the problem, but at minimum means
-        that the trained model performs much better than random chance on the
-        validation set (although it might be bad enough to not be worth
-        deploying).
--   Choosing the number of training steps involves balancing the following
-    tension:
-    -   On the one hand, training for more steps can improve performance and
-        makes hyperparameter tuning easier (see
-        [Shallue et al. 2018](https://arxiv.org/abs/1811.03600)).
-    -   On the other hand, training for fewer steps means that each training run
-        is faster and uses fewer resources, boosting tuning efficiency by
-        reducing the time between cycles and allowing more experiments to be run
-        in parallel. Moreover, if an unnecessarily large step budget is chosen
-        initially, it might be hard to change it down the road, e.g. once the
-        learning rate schedule is tuned for that number of steps.
+        -   예를 들어, 멋진 감쇠 스케줄을 추가하기 전에 고정 학습률로 시작하세요.
+    - 빠르고 최소한의 자원을 사용하는 초기 설정을 선택하면 하이퍼파라미터 튜닝이 훨씬 더 효율적입니다.
+        -   예를 들어, 작은 모델로 시작하세요.
+    -   "합리적인" 성능은 문제에 따라 다릅니다. (배포할 가치가 없을 정도로 나쁠 수 있지만) 이는 최소한 훈련된 모델이 검증 세트에서 무작위 선택보다 낫다는 것을 의미합니다.
+-   훈련 스텝 횟수를 선택하는 것은 다음과 같은 긴장 관계의 균형을 잡는 일입니다.
+    -   한편으로는 많은 스텝 동안 훈련하면 성능을 향상시키고 하이퍼파라미터 튜닝을 쉽게 만들 수 있습니다([Shallue et al. 2018](https://arxiv.org/abs/1811.03600)를 참고하세요).
+    -   다른 한편으로 적은 스텝 동안 훈련하면 각각의 훈련 실행이 빠르고 적은 자원을 사용합니다. 또한 튜닝 사이클의 시간 간격을 줄여 튜닝 효율성을 높이고, 병렬로 더 많은 실험을 수행할 수 있습니다. 게다가 불필요하게 큰 스텝 예산이 초기에 선택되면 향후에 바꾸기 어려울 수 있습니다. 예를 들어, 스텝 횟수에 대해 학습률 스케줄이 튜닝된 후.
 
-## A scientific approach to improving model performance
+## 모델 성능을 향상시키기 위한 과학적 접근 방법
 
-For the purposes of this document, the ultimate goal of machine learning
-development is to maximize the utility of the deployed model. Even though many
-aspects of the development process differ between applications (e.g. length of
-time, available computing resources, type of model), we can typically use the
-same basic steps and principles on any problem.
+이 문서의 목적상 머신러닝 개발의 궁극적인 목표는 배포 모델의 활용성을 극대화하는 것입니다. 개발 과정의 많은 측면(예를 들면, 시간, 가용한 컴퓨팅 자원, 모델 종류)이 애플리케이션마다 다르지만 일반적으로 모든 문제에 동일한 기본 단계와 원칙을 사용할 수 있습니다.
 
-Our guidance below makes the following assumptions:
+아래 가이드는 다음과 같은 가정을 합니다:
 
--   There is already a fully-running training pipeline along with a
-    configuration that obtains a reasonable result.
--   There are enough computational resources available to conduct meaningful
-    tuning experiments and run at least several training jobs in parallel.
+-   합리적인 결과를 내도록 설정된 완전히 구동하는 훈련 파이프라인이 이미 있습니다.
+-   의미있는 튜닝 실험을 수행하고 적어도 동시에 몇 개의 훈련 작업을 실행할 수 있는 충분한 계산 자원이 있습니다.
 
-### The incremental tuning strategy
+### 점진적인 튜닝 전략
 
-***Summary:*** *Start with a simple configuration and incrementally make
-improvements while building up insight into the problem. Make sure that any
-improvement is based on strong evidence to avoid adding unnecessary complexity.*
+***요약:*** *간단한 설정으로 시작하고 문제에 대한 통찰을 키워가며 점진적으로 개선하세요. 모든 개선은 불필요한 복잡도를 추가하지 않도록 확실한 증거를 바탕으로 수행되어야 합니다.*
 
--   Our ultimate goal is to find a configuration that maximizes the performance
-    of our model.
-    -   In some cases, our goal will be to maximize how much we can improve the
-        model by a fixed deadline (e.g. submitting to a competition).
-    -   In other cases, we want to keep improving the model indefinitely (e.g.
-        continually improving a model used in production).
--   In principle, we could maximize performance by using an algorithm to
-    automatically search the entire space of possible configurations, but this
-    is not a practical option.
-    -   The space of possible configurations is extremely large and there are
-        not yet any algorithms sophisticated enough to efficiently search this
-        space without human guidance.
--   Most automated search algorithms rely on a hand-designed *search space* that
-    defines the set of configurations to search in, and these search spaces can
-    matter quite a bit.
--   The most effective way to maximize performance is to start with a simple
-    configuration and incrementally add features and make improvements while
-    building up insight into the problem.
-    -   We use automated search algorithms in each round of tuning and
-        continually update our search spaces as our understanding grows.
--   As we explore, we will naturally find better and better configurations and
-    therefore our "best" model will continually improve.
-    -   We call it a *launch* when we update our best configuration (which may
-        or may not correspond to an actual launch of a production model).
-    -   For each launch, we must make sure that the change is based on strong
-        evidence – not just random chance based on a lucky configuration – so
-        that we don't add unnecessary complexity to the training pipeline.
+-   궁극적인 목표는 모델 성능을 극대화하는 설정을 찾는 것입니다.
+    -   일부 경우 정해진 기한(예를 들면, 경진 대회 제출)까지 최대한 모델을 개선하는 것이 목표입니다.
+    -   어떤 경우에는 모델을 끊임없이 계속 개선합니다(예를 들면, 제품에 사용되는 모델을 지속적으로 개선하기).
+-   원론적으로 가능한 설정 공간 전체를 자동으로 탐색하는 알고리즘을 사용해 성능을 극대화할 수 있지만 현실적인 방법은 아닙니다.
+    -   가능한 설정 공간은 극도로 방대하고 사람의 도움 없이 이런 공간을 효율적으로 탐색할만큼 충분히 정교한 알고리즘은 아직 없습니다.
+-   대부분의 자동 탐색 알고리즘은 탐색할 설정 집합을 수동으로 정의한 *탐색 공간*에 의존합니다. 이런 탐색 공간은 상당히 중요할 수 있습니다.
+-   가장 효과적으로 성능을 극대화하는 방법은 간단한 설정으로 시작하고 문제에 대한 통찰을 기르면서 점진적으로 기능을 추가하여 개선하는 것입니다.
+    -   튜닝 단계마다 자동화된 탐색 알고리즘을 사용하고 이해가 증진되면서 탐색 공간을 계속 업데이트합니다.
+-   탐색하면서 자연적으로 점점 더 좋은 설정을 찾고 따라서 "최상"의 모델이 계속 향상됩니다.
+    -   최상의 설정을 업데이트할 때 이를 "출시(launch)"라고 부릅니다(제품 모델의 출시에 해당할 수 있고 아닐 수도 있습니다).
+    -   훈련 파이프라인에 불필요한 복잡도를 추가하지 않기 위해 출시마다 운이 따른 무작위한 설정이 아니라 확실한 근거를 바탕으로 변경이 된 것인지 확인합니다.
 
-At a high level, our incremental tuning strategy involves repeating the
-following four steps:
+고수준에서 증분 튜닝 전략은 다음 단계를 반복하는 것입니다:
 
 1.  Identify an appropriately-scoped goal for the next round of experiments.
 2.  Design and run a set of experiments that makes progress towards this goal.

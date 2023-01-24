@@ -222,40 +222,21 @@
 ***요약:*** *대부분의 경우 주요 목표는 문제에 대한 통찰을 얻는 것입니다.*
 
 -   검증 세트의 성능을 최대화하는데 대부분의 시간을 사용한다고 생각할 수 있지만 실제로 문제에 대한 통찰을 얻는데 많은 시간을 사용하고 검증 세트 오류에 과도하게 집중하는 시간은 비교적 적습니다.
-    -   다른 말로 하면,
--   Although one might think we would spend most of our time trying to maximize
-    performance on the validation set, in practice we spend the majority of our
-    time trying to gain insight into the problem, and comparatively little time
-    greedily focused on the validation error.
-    -   In other words, we spend most of our time on "exploration" and only a
-        small amount on "exploitation".
--   In the long run, understanding the problem is critical if we want to
-    maximize our final performance. Prioritizing insight over short term gains
-    can help us:
-    -   Avoid launching unnecessary changes that happened to be present in
-        well-performing runs merely through historical accident.
-    -   Identify which hyperparameters the validation error is most sensitive
-        to, which hyperparameters interact the most and therefore need to be
-        re-tuned together, and which hyperparameters are relatively insensitive
-        to other changes and can therefore be fixed in future experiments.
-    -   Suggest potential new features to try, such as new regularizers if
-        overfitting is an issue.
-    -   Identify features that don't help and therefore can be removed, reducing
-        the complexity of future experiments.
-    -   Recognize when improvements from hyperparameter tuning have likely
-        saturated.
-    -   Narrow our search spaces around the optimal value to improve tuning
-        efficiency.
--   When we are eventually ready to be greedy, we can focus purely on the
-    validation error even if the experiments aren't maximally informative about
-    the structure of the tuning problem.
+    -   다른 말로 하면, 대부분의 시간을 "탐험"에 사용하고 "활용"에 적은 시간을 사용합니다.
+-   길게 봤을 때 최종 성능을 최대화하고 싶다면 문제를 이해하는 것이 중요합니다. 단기적인 이익보다 통찰에 우선순위를 두면 다음과 같은 일에 도움이 됩니다.
+    -   단순히 과거에 우연하게 잘 실행된 것만으로 불필요한 변경을 출시하지 않습니다.
+    -   검증 오류에 가장 민감한 하이퍼파라미터를 찾으세요. 어떤 하이퍼파라미터들이 서로 가장 상호작용이 큰지, 그래서 함께 튜닝해야 하는지 확인하세요. 어떤 하이퍼파라미터들이 다른 변환에 비교적 덜 민감한지, 그래서 향후 실험에서 고정할 수 있는지 찾으세요.
+    -   과대적합이 문제라면 규제와 같은 새로운 기능을 고려해 보세요.
+    -   도움이 되지 않아 향후 실험의 복잡도를 줄이도록 삭제할 수 있는 기능을 가려내세요.
+    -   하이퍼파라미터 튜닝으로 더 이상 개선되지 않을 때를 인식하세요.
+    -   튜닝 효율을 높이기 위해 최적 값 주위로 탐색 공간을 좁히세요.
+-   결국 탐욕적으로 활용할 준비가 될 때 튜닝 문제의 구조에 대해 최대한 많은 정보를 실험이 제공하지 않더라도 순전히 검증 오류에 초점을 맞출 수 있습니다.
 
-### Choosing the goal for the next round of experiments
+### 다음 실험을 위한 목표를 선택하세요
 
-***Summary:*** *Each round of experiments should have a clear goal and be
-sufficiently narrow in scope that the experiments can actually make progress
-towards the goal.*
+***요약:*** *실험마다 명확한 목표를 가지고 있고 실험이 목표를 향해 진전될 수 있도록 범위가 충분히 좁아야 합니다.*
 
+-   각 실험은 명확한 목표를 가지고 실험이 목표를 향해 진전될 수 있도록 범위가 충분히 좁아야 합니다: 여러 기능을 추가하거나 동시에 여러 질문에 답을 구하려 한다면 결과에 있는 개별 효과를 구분하지 못할 수 있습니다.
 -   Each round of experiments should have a clear goal and be sufficiently
     narrow in scope that the experiments can actually make progress towards the
     goal: if we try to add multiple features or answer multiple questions at
@@ -1231,16 +1212,10 @@ multi-host training can make it very easy to introduce bugs!*
 
 ### Which learning rate decay should I use as a default?
 
-<details><summary><em>[Click to expand]</em></summary>
-<br>
-
 -   Our preference is either linear decay or cosine decay, and a bunch of other
     schedule families are probably good too.
 
 ### Why do some papers have complicated learning rate schedules?
-
-<details><summary><em>[Click to expand]</em></summary>
-<br>
 
 -   It’s not uncommon to see papers with complicated piecewise learning rate
     (LR) decay schedules.
@@ -1266,9 +1241,6 @@ multi-host training can make it very easy to introduce bugs!*
         it fully reproducible.
 
 ### How should Adam’s hyperparameters be tuned?
-
-<details><summary><em>[Click to expand]</em></summary>
-<br>
 
 -   As discussed above, making general statements about search spaces and how
     many points one should sample from the search space is very difficult. Note
@@ -1370,9 +1342,6 @@ multi-host training can make it very easy to introduce bugs!*
 
 ### Where can I find an implementation of quasi-random search?
 
-<details><summary><em>[Click to expand]</em></summary>
-<br>
-
 -   We use
     [this implementation](https://github.com/mlcommons/algorithmic-efficiency/blob/main/algorithmic_efficiency/halton.py)
     that generates a Halton sequence for a given search space (intended to
@@ -1386,9 +1355,6 @@ multi-host training can make it very easy to introduce bugs!*
         [Bergstra & Bengio, 2012](https://www.jmlr.org/papers/v13/bergstra12a.html)).
 
 ### How many trials are needed to get good results with quasi-random search?
-
-<details><summary><em>[Click to expand]</em></summary>
-<br>
 
 <p align="center">
 <img src="assets/have_we_sampled_enough.png" width="49%" alt="A box plot showing the importance of sampling enough">
@@ -1411,9 +1377,6 @@ Box plots of the best performances for each trial budget are plotted above.
         validation error rate of \~23%.
 
 ### How can optimization failures be debugged and mitigated?
-
-<details><summary><em>[Click to expand]</em></summary>
-<br>
 
 
 ***Summary:*** *If the model is experiencing optimization difficulties, it’s
@@ -1598,9 +1561,6 @@ scale).">
 
 ### Why do you call the learning rate and other optimization parameters hyperparameters? They are not parameters of any prior distribution.
 
-<details><summary><em>[Click to expand]</em></summary>
-<br>
-
 -   It is true that the term "hyperparameter" has a precise
     [meaning](https://en.wikipedia.org/wiki/Hyperparameter) in Bayesian machine
     learning and referring to the learning rate and most of the other parameters
@@ -1622,9 +1582,6 @@ scale).">
     contexts.
 
 ### Why shouldn't the batch size be tuned to directly improve validation set performance?
-
-<details><summary><em>[Click to expand]</em></summary>
-<br>
 
 -   Changing the batch size *without changing any other details of the training pipeline* will often affect the validation set performance.
 -   However, the difference in validation set performance between two batch sizes typically goes away if the training pipeline is optimized independently for each batch size.

@@ -234,149 +234,51 @@
 
 ### 다음 실험을 위한 목표를 선택하세요
 
-***요약:*** *실험마다 명확한 목표를 가지고 있고 실험이 목표를 향해 진전될 수 있도록 범위가 충분히 좁아야 합니다.*
+***요약:*** *실험 라운드마다 명확한 목표를 가지고 있고 실험이 목표를 향해 진전될 수 있도록 범위가 충분히 좁아야 합니다.*
 
--   각 실험은 명확한 목표를 가지고 실험이 목표를 향해 진전될 수 있도록 범위가 충분히 좁아야 합니다: 여러 기능을 추가하거나 동시에 여러 질문에 답을 구하려 한다면 결과에 있는 개별 효과를 구분하지 못할 수 있습니다.
--   Each round of experiments should have a clear goal and be sufficiently
-    narrow in scope that the experiments can actually make progress towards the
-    goal: if we try to add multiple features or answer multiple questions at
-    once, we may not be able to disentangle the separate effects on the results.
--   Example goals include:
-    -   Try a potential improvement to the pipeline (e.g. a new regularizer,
-        preprocessing choice, etc.).
-    -   Understand the impact of a particular model hyperparameter (e.g. the
-        activation function)
-    -   Greedily maximize validation error.
+-   실험 라운드마다 명확한 목표를 가지고 실험이 목표를 향해 진전될 수 있도록 범위가 충분히 좁아야 합니다: 여러 기능을 추가하거나 동시에 여러 질문에 답을 구하려 한다면 결과에 있는 개별 효과를 구분하지 못할 수 있습니다.
+-   예를 들어 목표는 다음과 같습니다:
+    -   파이프라인에 가능성있는 개선을 시도해 보세요(예를 들면, 새로운 규제, 전처리 선택 등).
+    -   특정 모델 하이퍼파라미터의 영향을 이해하세요(예를 들면, 활서오하 함수).
+    -   탐욕적으로 검증 성능을 최대화하세요.
 
-### Designing the next round of experiments
+### 다음 실험 라운드 설계하기
 
-***Summary:*** *Identify which hyperparameters are scientific, nuisance, and
-fixed hyperparameters for the experimental goal. Create a sequence of studies to
-compare different values of the scientific hyperparameters while optimizing over
-the nuisance hyperparameters. Choose the search space of nuisance
-hyperparameters to balance resource costs with scientific value.*
+***요약:*** *실험 목표에 대해 체계적인, 성가신, 고정된 하이퍼파라미터를 구분합니다. 성가신 하이퍼파라미터를 최적화하면서 체계적인 하이퍼파라미터의 여러 값을 비교하기 위한 일련의 실험을 만듭니다. 체계적인 하이퍼파라미터와 자원 비용의 균형을 맞추기 위해 성가신 하이퍼파라미터의 탐색 공간을 선택하세요.*
 
-#### Identifying scientific, nuisance, and fixed hyperparameters
--   For a given goal, all hyperparameters will be either **scientific
-    hyperparameters**, **nuisance hyperparameters**, or **fixed
-    hyperparameters**.
-    -   Scientific hyperparameters are those whose effect on the model's
-        performance we're trying to measure.
-    -   Nuisance hyperparameters are those that need to be optimized over in
-        order to fairly compare different values of the scientific
-        hyperparameters. This is similar to the statistical concept of
-        [nuisance parameters](https://en.wikipedia.org/wiki/Nuisance_parameter).
-    -   Fixed hyperparameters will have their values fixed in the current round
-        of experiments. These are hyperparameters whose values do not need to
-        (or we do not want them to) change when comparing different values of
-        the scientific hyperparameters.
-        -   By fixing certain hyperparameters for a set of experiments, we must
-            accept that conclusions derived from the experiments might not be
-            valid for other settings of the fixed hyperparameters. In other
-            words, fixed hyperparameters create caveats for any conclusions we
-            draw from the experiments.
--   For example, if our goal is to "determine whether a model with more hidden
-    layers will reduce validation error", then the number of hidden layers is a
-    scientific hyperparameter.
-    -   The learning rate is a nuisance hyperparameter because we can only
-        fairly compare models with different numbers of hidden layers if the
-        learning rate is tuned separately for each number of layers (the optimal
-        learning rate generally depends on the model architecture).
-    -   The activation function could be a fixed hyperparameter if we have
-        determined in prior experiments that the best choice of activation
-        function is not sensitive to model depth, or if we are willing to limit
-        our conclusions about the number of hidden layers to only cover this
-        specific choice of activation function. Alternatively, it could be a
-        nuisance parameter if we are prepared to tune it separately for each
-        number of hidden layers.
--   Whether a particular hyperparameter is a scientific hyperparameter, nuisance
-    hyperparameter, or fixed hyperparameter is not inherent to that
-    hyperparameter, but changes depending on the experimental goal.
-    -   For example, the choice of activation function could be a scientific
-        hyperparameter (is ReLU or tanh a better choice for our problem?), a
-        nuisance hyperparameter (is the best 5-layer model better than the best
-        6-layer model when we allow several different possible activation
-        functions?), or a fixed hyperparameter (for ReLU nets, does adding batch
-        normalization in a particular position help?).
--   When designing a new round of experiments, we first identify the scientific
-    hyperparameters for our experimental goal.
-    -   At this stage, we consider all other hyperparameters to be nuisance
-        hyperparameters.
--   Next, we convert some of the nuisance hyperparameters into fixed
-    hyperparameters.
-    -   With limitless resources, we would leave all non-scientific
-        hyperparameters as nuisance hyperparameters so that the conclusions we
-        draw from our experiments are free from caveats about fixed
-        hyperparameter values.
-    -   However, the more nuisance hyperparameters we attempt to tune, the
-        greater the risk we fail to tune them sufficiently well for each setting
-        of the scientific hyperparameters and end up reaching the wrong
-        conclusions from our experiments.
-        -   As described
-            [below](#striking-a-balance-between-informative-and-affordable-experiments),
-            we could counter this risk by increasing the computational budget,
-            but often our maximum resource budget is less than would be needed
-            to tune over all non-scientific hyperparameters.
-    -   We choose to convert a nuisance hyperparameter into a fixed
-        hyperparameter when, in our judgment, the caveats introduced by fixing
-        it are less burdensome than the cost of including it as a nuisance
-        hyperparameter.
-        -   The more a given nuisance hyperparameter interacts with the
-            scientific hyperparameters, the more damaging it is to fix its
-            value. For example, the best value of the weight decay strength
-            typically depends on the model size, so comparing different model
-            sizes assuming a single specific value of the weight decay would not
-            be very insightful.
--   Although the type we assign to each hyperparameter depends on the
-    experimental goal, we have the following rules of thumb for certain
-    categories of hyperparameters:
-    -   Of the various optimizer hyperparameters (e.g. the learning rate,
-        momentum, learning rate schedule parameters, Adam betas etc.), at least
-        some of them will be nuisance hyperparameters because they tend to
-        interact the most with other changes.
-        -   They are rarely scientific hyperparameters because a goal like "what
-            is the best learning rate for the current pipeline?" doesn't give
-            much insight – the best setting could easily change with the next
-            pipeline change anyway.
-        -   Although we might fix some of them occasionally due to resource
-            constraints or when we have particularly strong evidence that they
-            don't interact with the scientific parameters, we should generally
-            assume that optimizer hyperparameters must be tuned separately to
-            make fair comparisons between different settings of the scientific
-            hyperparameters, and thus shouldn't be fixed.
-            -   Furthermore, we have no *a priori* reason to prefer one
-                optimizer hyperparameter value over another (e.g. they don't
-                usually affect the computational cost of forward passes or
-                gradients in any way).
-    -   In contrast, the *choice* of optimizer is typically a scientific
-        hyperparameter or fixed hyperparameter.
-        -   It is a scientific hyperparameter if our experimental goal involves
-            making fair comparisons between two or more different optimizers
-            (e.g. "determine which optimizer produces the lowest validation
-            error in a given number of steps").
-        -   Alternatively, we might make it a fixed hyperparameter for a variety
-            of reasons, including (1) prior experiments make us believe that the
-            best optimizer for our problem is not sensitive to current
-            scientific hyperparameters; and/or (2) we prefer to compare values
-            of the scientific hyperparameters using this optimizer because its
-            training curves are easier to reason about; and/or (3) we prefer to
-            use this optimizer because it uses less memory than the
-            alternatives.
-    -   Hyperparameters introduced by a regularization technique are typically
-        nuisance hyperparameters, but whether or not we include the
-        regularization technique at all is a scientific or fixed hyperparameter.
-        -   For example, dropout adds code complexity, so when deciding whether
-            to include it we would make "no dropout" vs "dropout" a scientific
-            hyperparameter and the dropout rate a nuisance hyperparameter.
-            -   If we decide to add dropout to our pipeline based on this
-                experiment, then the dropout rate would be a nuisance
-                hyperparameter in future experiments.
-    -   Architectural hyperparameters are often scientific or fixed
-        hyperparameters because architecture changes can affect serving and
-        training costs, latency, and memory requirements.
-        -   For example, the number of layers is typically a scientific or fixed
-            hyperparameter since it tends to have dramatic consequences for
-            training speed and memory usage.
+#### 체계적인, 성가신, 고정된 하이퍼파라미터를 구분합니다
+-   주어진 목표에 대해 모든 하이퍼파라미터는 **체계적인 하이퍼파라미터**, **성가신 하이퍼파라미터**, **고정된 하이퍼파라미터** 중 하나입니다.
+    -   체계적인 하이퍼파라미터는 모델의 성능에 영향을 미치는 하이퍼파라미터입니다.
+    -   성가신 하이퍼파라미터는 체계적인 하이퍼파라미터의 여러 값을 공정하게 비교하기 위해 최적화해야 하는 하이퍼파라미터입니다. 통계학의 [성가신 파라미터](https://en.wikipedia.org/wiki/Nuisance_parameter) 개념과 비슷합니다.
+    -   고정된 하이퍼파라미터는 현재 실험 라운드에서 고정된 값을 가집니다. 체계적인 하이퍼파라미터의 여러 값을 비교할 때 바꿀 필요가 없는 (또는 바꾸고 싶지 않은) 값을 가지는 하이퍼파라미터입니다.
+        -   일련의 실험에서 특정 하이퍼파라미터를 고정하면 실험의 결과가 고정된 하이퍼파라미터의 다른 값에 유효하지 않다는 것을 받아들여야 합니다. 다른 말로 하면 고정된 하이퍼파라미터는 실험에서 이끌어 낸 모든 결론에 대한 위험이 됩니다.
+-   예를 들어, 목표가 "더 많은 은닉 층을 가진 모델이 검증 오류를 줄이는지 결정하는 것"이라면 은닉 층의 개수는 체계적인 하이퍼파라미터입니다.
+    -   학습률을 층 개수에 대해 독립적으로 튜닝하면 다른 개수의 은닉 층을 가진 모델을 공정하게 비교할 수 있기 때문에 학습률은 성가신 하이퍼파라미터입니다(최적의 학습률은 일반적으로 모델 구조에 따라 다릅니다).
+    -   이전 실험에서 최선의 활성화 함수를 선택하는 것이 모델 깊이에 민감하지 않다고 결정했거나, 은닉 층의 개수에 대한 결론을 특정 활성화 함수만 다루기 위해 제한하려 한다면 활성화 함수는 고정된 하이퍼파라미터가 될 수 있습니다.
+-   특정 하이퍼파라미터가 체계적인 하이퍼파라미터인지, 성가신 하이퍼파라미터인지, 고정된 하이퍼파라미터인지는 하이퍼파라미터에 내재된  성질이 아니라 실험 목표에 따라 달라집니다.
+    -   예를 들어, 활성화 함수의 선택은 체계적인 하이퍼파라미터(해당 문제에 ReLU나 tanh가 더 나은가요?), 성가신 하이퍼파라미터(여러 가지 활성화 함수를 사용할 수 있을 때 5개의 층이 6개의 층을 가진 모델보다 낫나요?) 또는 고정된 하이퍼파라미터(ReLU를 사용할 때 특정 위치에 배치 정규화를 추가하는 것이 도움이 되나요?)가 될 수 있습니다.
+-   새로운 실험 라운드를 설계할 때 먼저 실험 목표에 맞는 체계적인 하이퍼파라미터를 찾아야 합니다.
+    -   이 단계에서 다른 모든 하이퍼파라미터를 성가신 하이퍼파라미터로 간주합니다.
+-   그다음 일부 성가신 하이퍼파라미터를 고정된 하이퍼파라미터로 바꿉니다.
+    -   자원에 제한이 없어 체계적인 하이퍼파라미터가 아닌 모든 하이퍼파라미터를 성가신 하이퍼파라미터로 남겨 놓으면 실험의 결과가 고정된 하이퍼파라미터 값에 대한 위험으로부터 자유롭습니다.
+    -   하지만 튜닝할 성가신 하이퍼파라미터가 많을수록 체계적인 하이퍼파라미터의 각 설정에 대해서 이를 충분히 튜닝하지 못하고 잘못된 실험 결과에 도달할 위험이 커집니다.
+        -   [아래에](#striking-a-balance-between-informative-and-affordable-experiments) 기술한 것처럼 계산 예산을 증가하여 이 위험에 대처할 수 있지만 체계적이지 않은 모든 하이퍼파라미터를 튜닝하기 위한 예산이 최대 자원 예산보다 큰 경우가 많습니다.
+    -   판단컨대 하이퍼파라미터를 고정하여 발생할 위험이 성가신 하이퍼파라미터로 포함시켰을 때 비용보다 덜 부담스럽다면 성가신 하이퍼파라미터를 고정된 하이퍼파라미터로 바꿉니다.
+        -   성가신 하이퍼파라미터가 체계적인 하이퍼파라미터와 상호작용이 많을수록 이 값을 고정하는 것이 실패할 것입니다. 예를 들어, 가중치 감쇠(weight decay) 강도에 대한 최상의 값은 일반적으로 모델 크기에 따라 다릅니다. 따라서 가중치 감쇠를 특정한 값으로 가정하고 여러 가지 모델 크기를 비교해서는 통찰을 얻기 힘듭니다.
+-   각 하이퍼파라미터의 타입은 실험 목표에 따라 달라지지만 특정 범주의 하이퍼파라미터에 대해서 다음과 같은 경험 규칙을 가지고 있습니다:
+    -   다양한 옵티마이저 하이퍼파라미터(예를 들어, 학습률, 모멘텀, 학습률 스케줄 파라미터, Adam의 베타 등) 중 일부는 다른 변화에 따라 크게 상호작용하는 경향이 있기 때문에 성가신 하이퍼파라미터가 될 것입니다.
+        -   "현재 파이프라인에서 최상의 학습률이 무엇인가?" 같은 목표에서 큰 통찰을 얻기 힘들기 때문에 체계적인 하이퍼파라미터가 되는 경우가 드뭅니다. 어쨋든 파이프라인 변화에 따라 최상의 값은 쉽게 바뀔 수 있습니다.
+        -   자원 제약이나 체계적인 하이퍼파라미터와 상호작용하지 않는다는 강력한 증거를 가지고 있을 때 이 값 중 일부를 고정할 수 있지만, 일반적으로 옵티마이저 하이퍼파라미터는 체계적인 하이퍼파림터 설정을 공정하게 비교하기 위해 별도로 튜닝해야 한다고 가정해야하므로 고정해서는 안됩니다.
+            -   게다가 옵티마이저 하이퍼파라미터의 한 값을 다른 값보다 선호할 이유를 *사전*에 가지고 있지 않습니다(예를 들어, 일반적으로 정방향 패스(forward pass)나 그레이디언트 계산 비용에 영향을 미치지 않습니다).
+    -   반면, 옵티마이저 *선택*은 일반적으로 체계적인 하이퍼파라미터나 고정된 하이퍼파라미터입니다.
+        -   실험 목적이 두 개 이상의 옵티마이저를 공정하게 비교하는 것이라면 체계적인 하이퍼파라미터입니다(예를 들어, "주어진 스텝 횟수에서 가장 낮은 검증 오류를 내는 옵티마이저 결정하기")
+        -   또는 다양한 이유로 고정 하이퍼파라미터로 취급할 수 있습니다. (1) 이전 실험을 바탕으로 해당 문제의 최상의 옵티마이저가 현재 체계적인 하이퍼파라미터에 민감하지 않는다고 믿는 경우, (2) 훈련 곡선이 분석하기 쉽기 때문에 이 옵티마이저로 체계적인 하이퍼파라미터의 값을 비교하고 싶은 경우, (3) 다른 옵티마이저보다 메모리를 적게 사용하기 때문에 이 옵티마이저를 사용하고 싶은 경우입니다.
+    -   규제 하이퍼파라미터는 일반적으로 성가신 하이퍼파라미터입니다. 하지만 규제를 포함할지 여부는 체계적인 하이퍼파라미터이거나 고정된 하이퍼파라미터입니다.
+        -   예를 들어, 드롭아웃은 코드 복잡도를 높입니다. 따라서 드롭아웃을 추가할 때 "드롭아웃 없음" 대 "드롭아웃 있음"이 체계적인 하이퍼파라미터가 되고, 드롭아웃 비율은 성가신 하이퍼파라미터가 됩니다.
+            -   이 실험을 통해 파이프라인에 드롭아웃을 추가하기로 결정했다면 향후 실험에서 드롭아웃 비율은 성가신 하이퍼파라미터가 됩니다.
+    -   구조적인 하이퍼파라미터는 종종 체계적인 하이퍼파라미터이거나 고정된 하이퍼파라미터입니다. 구조 변경은 서빙(serving), 훈련 비용, 레이턴시, 메모리 요구사항에 영향을 미칠 수 있기 때문입니다.
+        - 예를 들어, 층 개수는 훈련 속도와 메모리 사용량에 큰 영향을 미치기 때문에 일반적으로 체계적인 하이퍼파라미터이거나 고정된 하이퍼파라미터입니다.
+-   일부 경우에
 -   In some cases, the sets of nuisance and fixed hyperparameters will depend on
     the values of the scientific hyperparameters.
     -   For example, suppose we are trying to determine which optimizer out of

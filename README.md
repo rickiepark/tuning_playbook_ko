@@ -278,26 +278,10 @@
             -   이 실험을 통해 파이프라인에 드롭아웃을 추가하기로 결정했다면 향후 실험에서 드롭아웃 비율은 성가신 하이퍼파라미터가 됩니다.
     -   구조적인 하이퍼파라미터는 종종 체계적인 하이퍼파라미터이거나 고정된 하이퍼파라미터입니다. 구조 변경은 서빙(serving), 훈련 비용, 레이턴시, 메모리 요구사항에 영향을 미칠 수 있기 때문입니다.
         - 예를 들어, 층 개수는 훈련 속도와 메모리 사용량에 큰 영향을 미치기 때문에 일반적으로 체계적인 하이퍼파라미터이거나 고정된 하이퍼파라미터입니다.
--   일부 경우에
--   In some cases, the sets of nuisance and fixed hyperparameters will depend on
-    the values of the scientific hyperparameters.
-    -   For example, suppose we are trying to determine which optimizer out of
-        Nesterov momentum and Adam results in the lowest validation error. The
-        scientific hyperparameter is the `optimizer`, which takes values
-        `{"Nesterov_momentum", "Adam"}`. The value
-        `optimizer="Nesterov_momentum"` introduces the nuisance/fixed
-        hyperparameters `{learning_rate, momentum}`, but the value
-        `optimizer="Adam"` introduces the nuisance/fixed hyperparameters
-        `{learning_rate, beta1, beta2, epsilon}`.
-    -   Hyperparameters that are only present for certain values of the
-        scientific hyperparameters are called **conditional hyperparameters**.
-    -   We should not assume two conditional hyperparameters are the same just
-        because they have the same name! In the above example, the conditional
-        hyperparameter called `learning_rate` is a *different* hyperparameter
-        for `optimizer="Nesterov_momentum"` versus `optimizer="Adam"`. Its role
-        is similar (although not identical) in the two algorithms, but the range
-        of values that work well in each of the optimizers is typically
-        different by several orders of magnitude.
+-   일부 경우에 성가신 하이퍼파라미터와 고정된 하이퍼파라미터는 체계적인 하이퍼파라미터에 따라 달라집니다.
+    -   예를 들어, 네스테로프 모멘텀(Nesterov momentum)과 Adam 중 어떤 옵티마이저가 낮은 검증 오류를 내는지 결정하기 원한다고 가정해 보죠. 체계적인 하이퍼파라미터는 `optimizer`로 `{"Nesterov_momentum", "Adam"}` 값을 가집니다. `optimizer="Nesterov_momentum"` 값은 성가신 하이퍼파라미터와 고정된 하이퍼파라미터로 `{learning_rate, momentum}`를 만듭니다. 하지만 `optimizer="Adam"` 값은 성가신 하이퍼파라미터와 고정된 하이퍼파라미터로 `{learning_rate, beta1, beta2, epsilon}`를 만듭니다.
+    -   체계적인 하이퍼파라미터의 특정 값에만 나타나는 하이퍼파라미터를 **조건부 하이퍼파라미터**라고 부릅니다.
+    -   두 개의 조건부 하이퍼파라미터가 이름이 같다고 같은 값을 가진다고 가정해서는 안됩니다. 앞의 예의 경우 조건부 하이퍼파라미터 `learning_rate`은 `optimizer="Nesterov_momentum"`와 `optimizer="Adam"`에서 *다른* 하이퍼파라미터입니다. 이 하이퍼파라미터의 역할은 두 알고리즘에서 (동일하지는 않지만) 비슷합니다. 하지만 일반적으로 각 옵티마이저에서 적절한 값의 범위는 자릿수부터 다릅니다.
 
 #### Creating a set of studies
 
